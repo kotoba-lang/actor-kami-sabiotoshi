@@ -28,6 +28,7 @@
   ],
   "heartbeatRequired": true,
   "name": "kami-sabiotoshi",
+  "repository": "https://github.com/kotoba-lang/actor-kami-sabiotoshi",
   "nanoid": "s4b10t05",
   "performerType": "service",
   "pipelines": [
