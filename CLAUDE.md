@@ -1,4 +1,12 @@
-# etzhayyim-project-kami — kami.etzhayyim.com / worlds.etzhayyim.com
+# actor-kami-sabiotoshi
+
+Canonical repository: `kotoba-lang/actor-kami-sabiotoshi`.
+Historical alias: `etzhayyim/com-etzhayyim-kami-sabiotoshi`.
+
+This resident actor owns the Sabi-Otoshi item catalog, rust-zone scoring, and
+governed social pipelines. It does not own KAMI Engine or Tamaki's world model.
+
+# Historical KAMI project context — kami.etzhayyim.com / worlds.etzhayyim.com
 
 **KAMI** — wgpu + KNP + hecs + KAMI Interface による次世代ゲームエンジン + 対話的ゲーム制作ワークベンチ。29 ゲーム (22 Godot + 6 Brainrot + 1 Suika) を KAMI Islands に移行済み。共通世界 "KAMI World" 上でユーザー制作ゲームが共存。**ログイン不要 (Guest Mode)** で world 作成・プレイ可能。Minecraft/Fortnite/Roblox 風テンプレートから即座に 3D ワールドを生成し、WebGPU でブラウザ内プレイ。
 

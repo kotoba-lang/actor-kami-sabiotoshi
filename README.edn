@@ -1,0 +1,6 @@
+{:repo/id "kotoba-lang/actor-kami-sabiotoshi"
+ :repo/aliases ["etzhayyim/com-etzhayyim-kami-sabiotoshi"]
+ :repo/role :governed-executable-actor
+ :repo/execution :resident
+ :repo/family :kami
+ :repo/boundary "KAMI Sabi-Otoshi catalog, scoring, and governed social pipelines; no KAMI engine ownership and no Tamaki world-model authority."}
