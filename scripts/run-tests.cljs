@@ -1,0 +1,89 @@
+#!/usr/bin/env nbb
+;; scripts/run-tests.cljs -- run this actor's contract suite under nbb.
+;;
+;;   nbb scripts/run-tests.cljs
+;;
+;; exit 0: tests ran and all passed
+;; exit 1: tests ran and something failed
+;; exit 2: the suite could NOT be run (dependency unreachable, or zero tests
+;;         collected). Deliberately not 0 and not 1 -- "could not answer" is a
+;;         third outcome. CLAUDE.md's second question is "what does this return
+;;         when it cannot run at all?", and a runner that exits 0 because it
+;;         never got as far as a test is the exact defect that question names.
+;;
+;; Why a runner script at all, instead of a deps.edn :test alias like
+;; kotoba-lang/actor-bunken has: this actor's boundary requires
+;; `kotoba.lang.text` (clojure.string was retired for it in 6fa6d06), which
+;; lives in the sibling west project kotoba-lang/text. That path has to be
+;; resolved at run time, and nbb sits above the JVM in this workspace's runtime
+;; priority order (kotoba wasm > clojurewasm > ClojureScript > nbb > JVM/bb),
+;; so the suite runs on nbb rather than pulling in a JVM test runner.
+;; kbb would be preferred for new tooling but is not installed on this machine.
+;;
+;; Resolution order for kotoba.lang.text, first hit wins:
+;;   1. $KOTOBA_TEXT_SRC
+;;   2. ../text/src                 (sibling layout inside orgs/kotoba-lang/)
+;;   3. <superproject>/orgs/kotoba-lang/text/src, where <superproject> is found
+;;      from `git rev-parse --git-common-dir` -- which points at the REAL repo
+;;      even when this file is running inside a detached worktree, so the same
+;;      command works in the west checkout and in /tmp worktrees alike.
+
+(require '[clojure.string :as s])
+
+(def fs (js/require "node:fs"))
+(def path (js/require "node:path"))
+(def cp (js/require "node:child_process"))
+
+(defn- exists? [p] (and p (.existsSync fs p)))
+
+(defn- git-common-dir []
+  (try
+    (-> (.execSync cp "git rev-parse --git-common-dir"
+                   #js {:encoding "utf8" :stdio #js ["pipe" "pipe" "ignore"]})
+        str s/trim)
+    (catch :default _ nil)))
+
+(defn- repo-home
+  "The actual repository directory, even from inside a linked worktree."
+  []
+  (when-let [g (git-common-dir)]
+    (.resolve path (.dirname path (.resolve path g)))))
+
+(def text-src
+  (let [cands (remove nil?
+                      [(.-KOTOBA_TEXT_SRC js/process.env)
+                       (.resolve path (.cwd js/process) ".." "text" "src")
+                       (when-let [h (repo-home)]
+                         (.resolve path h ".." ".." ".." "orgs" "kotoba-lang" "text" "src"))
+                       (when-let [h (repo-home)]
+                         (.resolve path h ".." "text" "src"))])]
+    (first (filter #(exists? (.join path % "kotoba" "lang" "text.cljc")) cands))))
+
+(when-not text-src
+  (println "REFUSED: cannot locate kotoba.lang.text (the sibling west project kotoba-lang/text).")
+  (println "  Looked at: $KOTOBA_TEXT_SRC, ../text/src, and <superproject>/orgs/kotoba-lang/text/src")
+  (println "  Not reporting a pass: the suite was never run. Set KOTOBA_TEXT_SRC to that repo's src/,")
+  (println "  or `west update --fetch smart text` in the superproject.")
+  (js/process.exit 2))
+
+(def here (.resolve path (.cwd js/process)))
+(def cp-str (s/join ":" [(.join path here "src") (.join path here "test") text-src]))
+
+(def runner
+  ;; The end-run-tests hook is where the counts come from. A boolean "did it
+  ;; pass" cannot tell one regression apart from a suite that collected nothing,
+  ;; so the count is printed and a zero-test run is exit 2, not exit 0.
+  (str "(require '[cljs.test :as t] '[kami_sabiotoshi.murakumo-test])"
+       "(defmethod t/report [:cljs.test/default :end-run-tests] [m]"
+       "  (println (str \"TESTS=\" (:test m) \" PASS=\" (:pass m)"
+       "                \" FAIL=\" (:fail m) \" ERROR=\" (:error m)))"
+       "  (cond (zero? (:test m))"
+       "          (do (println \"REFUSED: zero tests collected -- not a pass.\") (js/process.exit 2))"
+       "        (pos? (+ (:fail m) (:error m))) (js/process.exit 1)"
+       "        :else (js/process.exit 0)))"
+       "(t/run-tests 'kami_sabiotoshi.murakumo-test)"))
+
+(println (str "running suite on nbb; kotoba.lang.text <- " text-src))
+(let [r (.spawnSync cp "nbb" #js ["--classpath" cp-str "-e" runner]
+                    #js {:stdio "inherit" :encoding "utf8"})]
+  (js/process.exit (or (.-status r) 2)))
