@@ -21,7 +21,7 @@
       :missing-gates equals the spec's :required-gates, so a plan that came
       back blocked for some unrelated reason does not count as the gate
       having discriminated."
-  (:require [kotoba.lang.text :as str]
+  (:require [clojure.string :as str]
             [clojure.test :refer [deftest is testing]]
             [kami_sabiotoshi.murakumo :as m]))
 
