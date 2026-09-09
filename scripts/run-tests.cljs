@@ -13,14 +13,14 @@
 ;;
 ;; Why a runner script at all, instead of a deps.edn :test alias like
 ;; kotoba-lang/actor-bunken has: this actor's boundary requires
-;; `kotoba.lang.text` (clojure.string was retired for it in 6fa6d06), which
+;; `clojure.string` (clojure.string was retired for it in 6fa6d06), which
 ;; lives in the sibling west project kotoba-lang/text. That path has to be
 ;; resolved at run time, and nbb sits above the JVM in this workspace's runtime
 ;; priority order (kotoba wasm > clojurewasm > ClojureScript > nbb > JVM/bb),
 ;; so the suite runs on nbb rather than pulling in a JVM test runner.
 ;; kbb would be preferred for new tooling but is not installed on this machine.
 ;;
-;; Resolution order for kotoba.lang.text, first hit wins:
+;; Resolution order for clojure.string, first hit wins:
 ;;   1. $KOTOBA_TEXT_SRC
 ;;   2. ../text/src                 (sibling layout inside orgs/kotoba-lang/)
 ;;   3. <superproject>/orgs/kotoba-lang/text/src, where <superproject> is found
@@ -60,7 +60,7 @@
     (first (filter #(exists? (.join path % "kotoba" "lang" "text.cljc")) cands))))
 
 (when-not text-src
-  (println "REFUSED: cannot locate kotoba.lang.text (the sibling west project kotoba-lang/text).")
+  (println "REFUSED: cannot locate clojure.string (the sibling west project kotoba-lang/text).")
   (println "  Looked at: $KOTOBA_TEXT_SRC, ../text/src, and <superproject>/orgs/kotoba-lang/text/src")
   (println "  Not reporting a pass: the suite was never run. Set KOTOBA_TEXT_SRC to that repo's src/,")
   (println "  or `west update --fetch smart text` in the superproject.")
@@ -83,7 +83,7 @@
        "        :else (js/process.exit 0)))"
        "(t/run-tests 'kami_sabiotoshi.murakumo-test)"))
 
-(println (str "running suite on nbb; kotoba.lang.text <- " text-src))
+(println (str "running suite on nbb; clojure.string <- " text-src))
 (let [r (.spawnSync cp "nbb" #js ["--classpath" cp-str "-e" runner]
                     #js {:stdio "inherit" :encoding "utf8"})]
   (js/process.exit (or (.-status r) 2)))
