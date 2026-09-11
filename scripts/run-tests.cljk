@@ -1,7 +1,7 @@
-#!/usr/bin/env nbb
+#!/usr/bin/env kbb
 ;; scripts/run-tests.cljk -- run this actor's contract suite under nbb.
 ;;
-;;   nbb scripts/run-tests.cljk
+;;   kbb --backend sci scripts/run-tests.cljk
 ;;
 ;; exit 0: tests ran and all passed
 ;; exit 1: tests ran and something failed
