@@ -7,7 +7,7 @@
 ;; exit 1: tests ran and something failed
 ;; exit 2: the suite could NOT be run (dependency unreachable, or zero tests
 ;;         collected). Deliberately not 0 and not 1 -- "could not answer" is a
-;;         third outcome. CLAUDE.md's second question is "what does this return
+;;         third outcome. AGENTS.md's second question is "what does this return
 ;;         when it cannot run at all?", and a runner that exits 0 because it
 ;;         never got as far as a test is the exact defect that question names.
 ;;

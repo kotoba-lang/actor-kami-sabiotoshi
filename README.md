@@ -23,7 +23,7 @@ repo only plans records for the actor's own collections.
 | `src/kami_sabiotoshi/murakumo.cljk` | Pure actor boundary (`kami_sabiotoshi.murakumo`). `cell-specs` declares one cell per legacy pipeline; `cell-plan` turns a cell + attestations into either `{:status :blocked :effects []}` or `{:status :ready :effects [...]}` where every effect is an `:mst/put-record` into a `com.etzhayyim.kami-sabiotoshi.*` collection. |
 | `test/kami_sabiotoshi/murakumo_test.cljk` | Contract suite for that boundary (see below). |
 | `scripts/run-tests.cljk` | Runner for the suite. |
-| `CLAUDE.md` | Agent instructions plus the historical KAMI project context (Guest Mode, world templates, KAMI Worlds) this actor was carved out of. |
+| `AGENTS.md` | Agent instructions plus the historical KAMI project context (Guest Mode, world templates, KAMI Worlds) this actor was carved out of. |
 | `cljk-origin.edn` | Which extension each `.cljk` file had before the 2026-09-11 rename. |
 
 ## The gate
