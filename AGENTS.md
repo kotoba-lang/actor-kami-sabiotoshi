@@ -421,7 +421,7 @@ Final stage 進化は他 game の stage を要求。1 体だけ先行進化で�
 
 ```
 60-apps/etzhayyim-project-kami/
-├── CLAUDE.md
+├── AGENTS.md
 │                                        ← KAMI Engine は 40-engine/kami-engine/ に移動済み
 ├── scenes/                              ← JSON-LD scene data
 │   ├── brainrot-island.jsonld           (Brainrot Island — 6 zones + 6 characters)

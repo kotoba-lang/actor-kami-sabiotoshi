@@ -10,7 +10,7 @@
   same generated scaffold; ported rather than rewritten, and extended here with
   the `safe-rkey` cases that repo does not have.
 
-  Two things this suite deliberately asserts, both from CLAUDE.md's 8 questions:
+  Two things this suite deliberately asserts, both from AGENTS.md's 8 questions:
 
     * BOTH directions of the gate. `cell-plan` is the actor's fail-closed
       boundary: unattested gates must yield :blocked with NO effects. A suite
